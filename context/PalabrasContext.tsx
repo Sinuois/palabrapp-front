@@ -37,7 +37,7 @@ export const PalabrasProvider = ({ children }: any ) => {
         // siguienteUrl.current = `/palabras?limite=${cargaActual.current}`;
 
         const resp = await palabrasApi.get<PalabrasResponse>('/palabras');
-        setPalabras([ ...resp.data.palabras ]);
+        setPalabras([ ...resp.data.palabras.reverse() ]);
         setCantPalabras(resp.data.palabras.length);
         setCargado(true);
 

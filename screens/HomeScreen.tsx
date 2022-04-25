@@ -12,6 +12,7 @@ export const HomeScreen = ({ navigation }: Props) => {
 
     const [ isRefreshing, setIsRefreshing ] = useState( false );
     const { palabras, cargarPalabras, cantPalabras } = useContext( PalabrasContext );
+    const [ ordenPalabras, setOrdenPalabras ] = useState( 'Abc' );
 
     const cargarPalabrasDelBackend = async() => {
         
@@ -20,12 +21,31 @@ export const HomeScreen = ({ navigation }: Props) => {
         setIsRefreshing(false); 
     }
 
+    const cambiarOrden = async() => {
+        if (ordenPalabras === 'Abc') {
+            setOrdenPalabras('New');
+            setIsRefreshing(true);
+            await cargarPalabras();
+            setIsRefreshing(false); 
+        } 
+        if (ordenPalabras === 'New') setOrdenPalabras('Zyx');
+        if (ordenPalabras === 'Zyx') setOrdenPalabras('Abc');
+    }
+
     useEffect(() => {
         SplashScreen.hide();
     }, []);
-    
 
-    palabras.sort((a, b) => a.concepto.localeCompare(b.concepto));
+    switch(ordenPalabras) { 
+        case 'Abc': { 
+            palabras.sort((a, b) => a.concepto.localeCompare(b.concepto));
+            break; 
+        } 
+        case 'Zyx': { 
+            palabras.sort((b, a) => a.concepto.localeCompare(b.concepto));
+            break; 
+        } 
+    } 
 
     return (
         <View style={{ flex: 1, marginHorizontal: 10 }}>
@@ -63,6 +83,18 @@ export const HomeScreen = ({ navigation }: Props) => {
                         }
                     
                     />
+                    <TouchableOpacity
+                        activeOpacity={ 0.8 }
+                        onPress={ cambiarOrden }
+                    >
+                        <View style={{...styles.botonFlotante, backgroundColor: '#ffad33', bottom: 620, width: 70}}>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>
+                                { ordenPalabras }
+                            </Text>
+                        </View>  
+
+                    </TouchableOpacity>                      
+                      
                     
                     <View style={{...styles.botonFlotante, backgroundColor: '#02ac66', bottom: 180, width: 70}}>
                         <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>
