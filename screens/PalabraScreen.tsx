@@ -136,7 +136,6 @@ export const PalabraScreen = ({ navigation, route }: Props)=> {
         
                                 <Text style={ styles.label }>Concepto:</Text>
                                 <TextInput 
-                                    placeholder="Concepto"
                                     style={ styles.textInput }
                                     value={ conceptoForm }
                                     editable={false}
@@ -144,9 +143,10 @@ export const PalabraScreen = ({ navigation, route }: Props)=> {
                                 />
                                 <Text style={ styles.label }>Significado:</Text>
                                 <TextInput 
-                                    placeholder="Significado"
+                                    placeholder="Ingrese la definición detallada"
                                     multiline={true}
-                                    selectionColor="white"
+                                    selectionColor='grey'
+                                    placeholderTextColor='grey'
                                     style={{ ...styles.textInput, height: 70, textAlignVertical: 'top' }}
                                     value={ significadoForm }
                                     onChangeText={ ( value )=> onChange( value, 'significadoForm' )  }
@@ -249,15 +249,17 @@ export const PalabraScreen = ({ navigation, route }: Props)=> {
                                 <Text style={ styles.label }>Concepto:</Text>
                                 <TextInput 
                                     placeholder="Ingrese la palabra o concepto principal"
-                                    selectionColor={'white'}
+                                    selectionColor='grey'
                                     style={ styles.textInput }
+                                    placeholderTextColor='grey'                                    
                                     onChangeText={ ( value )=> onChange( value, 'conceptoForm' )  }
                                 />
                                 <Text style={ styles.label }>Significado:</Text>
                                 <TextInput 
                                     placeholder="Ingrese la definición detallada"
-                                    selectionColor={'white'}
+                                    selectionColor='grey'
                                     multiline={true}
+                                    placeholderTextColor="grey"
                                     style={{ ...styles.textInput, height: 70, textAlignVertical: 'top' }}
                                     onChangeText={ ( value )=> onChange( value, 'significadoForm' )  }
                                 />  
