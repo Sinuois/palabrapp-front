@@ -39,7 +39,6 @@ export const SearchInput = ({ style, onDebounce }: Props) => {
             <TextInput 
                 placeholder='Buscar concepto'
                 placeholderTextColor={'grey'}
-                selectionColor='black'
                 style={{ 
                     ...styles.textInput,
                     top: (Platform.OS === 'ios') ? 0 : 2 
