@@ -85,7 +85,7 @@ export const HomeScreen = ({ navigation }: Props) => {
                     />
                     <TouchableOpacity
                         activeOpacity={ 0.8 }
-                        onPress={ cambiarOrden }
+                        onPressIn={ cambiarOrden }
                     >
                         <View style={{...styles.botonFlotante, backgroundColor: '#ffad33', bottom: 620, width: 70}}>
                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>
@@ -104,7 +104,7 @@ export const HomeScreen = ({ navigation }: Props) => {
 
                     <TouchableOpacity
                         activeOpacity={ 0.8 }
-                        onPress={ () => navigation.navigate('PalabraScreen', {}) }
+                        onPressIn={ () => navigation.navigate('PalabraScreen', {}) }
                     >
                         <View style={{...styles.botonFlotante, backgroundColor: '#4287f5'}}>
                         <Icon
@@ -119,7 +119,7 @@ export const HomeScreen = ({ navigation }: Props) => {
 
                     <TouchableOpacity
                         activeOpacity={ 0.8 }
-                        onPress={ cargarPalabrasDelBackend }
+                        onPressIn={ cargarPalabrasDelBackend }
                     >
                         <View style={{...styles.botonFlotante, backgroundColor: '#5856D6', bottom: 70}}>
                             <Icon
