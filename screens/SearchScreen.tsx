@@ -32,7 +32,7 @@ export const SearchScreen = ({ navigation }: Props) => {
         if (term.length === 0) return setConceptosFiltrados([]); //Si no se busca nada, no habrá conceptos filtrados
         if ( isNaN( Number(term) ) ) { //Si la búsqueda no es número, se busca por nombre
             setConceptosFiltrados(
-                palabras.filter( palabra => normalizar(palabra.concepto)
+                palabras.filter( palabra => normalizar(palabra.concepto + palabra.significado)
                     .includes( normalizar(term)) )
             )
         }
@@ -73,7 +73,8 @@ export const SearchScreen = ({ navigation }: Props) => {
                             }) 
                         }
                     >
-                        <Text style={ styles.concepto }>{ item.concepto }</Text>
+                        <Text style={ styles.concepto }>{ item.concepto  }</Text>
+                        <Text style={ styles.significado }>{ item.significado  }</Text>
                     </TouchableOpacity>
                 )}
 
@@ -88,6 +89,10 @@ export const SearchScreen = ({ navigation }: Props) => {
 
 const styles = StyleSheet.create({
     concepto: {
+        fontSize: 20,
+        color: 'yellow'
+    },
+    significado: {
         fontSize: 20,
         color: 'white'
     },
