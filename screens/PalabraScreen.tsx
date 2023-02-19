@@ -9,6 +9,8 @@ import { PalabrasContext } from '../context/PalabrasContext'
 import { useForm } from '../hooks/useForm'
 import { Palabra } from '../interfaces/appInterfaces'
 import { RootStackParams } from '../navigator/TabLista'
+import axios from 'axios';
+import cheerio from 'cheerio';
 
 interface Props extends StackScreenProps<RootStackParams, 'PalabraScreen'>{};
 
@@ -25,6 +27,7 @@ export const PalabraScreen = ({ navigation, route }: Props)=> {
     const [cargado, setCargado] = useState(false);
 
     const [modalBorrar, setModalBorrar] = useState(false);
+
 
     const { _id, conceptoForm, significadoForm = '', form, onChange, setFormValue } = useForm({
         _id: id,
@@ -91,7 +94,7 @@ export const PalabraScreen = ({ navigation, route }: Props)=> {
                 }                
 
                 const resp = await palabrasApi.post<Palabra>('/palabras', {
-                    concepto: palabraFiltrada[0].toUpperCase() + palabraFiltrada.toLocaleLowerCase().slice(1),
+                    concepto: palabraFiltrada[0].toUpperCase() + palabraFiltrada.slice(1),
                     significado: significadoForm
                 });
         
@@ -107,6 +110,45 @@ export const PalabraScreen = ({ navigation, route }: Props)=> {
             // onChange( palabraNueva._id, '_id' );
         }
     } 
+
+    const autocompletarDefinicion = async () => {
+        let palabraBusqueda = conceptoForm;
+        const url = `https://dle.rae.es/${palabraBusqueda}`;
+        try {
+            const response = await axios.get(url);
+            const html = response.data;
+            const $ = cheerio.load(html);
+            let definicion = $('.j').first().text();
+            let contador = 0;
+            let index = 0;
+            if (definicion.length > 0){
+                for (let i = 0; i < definicion.length; i++) {
+                    if (definicion.charAt(i).toUpperCase() === '.') {
+                        contador++;
+                        if (contador === 2) {
+                            index = i;
+                            break;
+                        }
+                    }
+                }
+                if (definicion.substring(index+2, index+6) === 'y f.'){
+                    definicion = definicion.substring(index+7);
+                } else {
+                    definicion = definicion.substring(index+2);
+                }
+
+                definicion = definicion[0].toUpperCase() + definicion.slice(1);
+                setErrorTomado("");
+            } else {
+                setErrorTomado("No se ha logrado encontrar una definición para \"" + palabraBusqueda + "\".");
+            }
+
+            onChange( definicion, 'significadoForm' ); 
+            
+        } catch (error) {
+            setErrorTomado("No se ha logrado encontrar una definición para \"" + palabraBusqueda + "\".");
+        }
+        };
     
     const eliminar = async() => {
         //Eliminar concepto físicamente de la base de datos
@@ -252,10 +294,18 @@ export const PalabraScreen = ({ navigation, route }: Props)=> {
                                     placeholderTextColor='grey'                                    
                                     onChangeText={ ( value )=> onChange( value, 'conceptoForm' )  }
                                 />
+                                <Espaciador orientacion={'vertical'} espaciado={20} />
+                                <Button 
+                                    title="Autocompletar significado"
+                                    onPress={ autocompletarDefinicion }
+                                    color="#4287f5"
+                                />  
+                                <Espaciador orientacion={'vertical'} espaciado={20} />  
                                 <Text style={ styles.label }>Significado:</Text>
                                 <TextInput 
                                     placeholder="Ingrese la definición detallada"
                                     multiline={true}
+                                    defaultValue={ significadoForm }
                                     placeholderTextColor="grey"
                                     style={{ ...styles.textInput, height: 70, textAlignVertical: 'top' }}
                                     onChangeText={ ( value )=> onChange( value, 'significadoForm' )  }
