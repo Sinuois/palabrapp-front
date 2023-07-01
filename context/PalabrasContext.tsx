@@ -23,24 +23,11 @@ export const PalabrasProvider = ({ children }: any ) => {
         cargarPalabras();
     }, [])
 
-    // const cargaActual = useRef(50);
-    // const palabrasPorCarga = 50;
-    // const siguienteUrl = useRef(`/palabras?limite=${cargaActual.current}`);
-
     const cargarPalabras = async() => {
-
-        // const resp = await palabrasApi.get<PalabrasResponse>(siguienteUrl.current);
-        // setPalabras([ ...resp.data.palabras ]);
-
-        // console.log(siguienteUrl.current);
-        // cargaActual.current = cargaActual.current + palabrasPorCarga;
-        // siguienteUrl.current = `/palabras?limite=${cargaActual.current}`;
-
         const resp = await palabrasApi.get<PalabrasResponse>('/palabras');
         setPalabras([ ...resp.data.palabras.reverse() ]);
         setCantPalabras(resp.data.palabras.length);
         setCargado(true);
-
     }
 
 

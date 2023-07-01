@@ -47,6 +47,7 @@ export const SearchInput = ({ style, onDebounce }: Props) => {
                 autoCorrect={false}
                 value={ textValue }
                 onChangeText={ setTextValue }
+                maxFontSizeMultiplier={1}
             />
         </View>
     </View>
@@ -61,6 +62,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#F3F1F3',
         borderRadius: 50,
         height: 40,
+        maxHeight: 40,
         paddingHorizontal: 20,
         justifyContent: 'center',
         alignItems: 'center',
@@ -78,6 +80,7 @@ const styles = StyleSheet.create({
     textInput: {
         flex: 1,
         fontSize: 18,
+        maxHeight: 40,
         top: 2,
         color: 'black'
     }

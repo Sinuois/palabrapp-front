@@ -74,6 +74,7 @@ export const SearchScreen = ({ navigation }: Props) => {
                         }
                     >
                         <Text style={ styles.concepto }>{ item.concepto  }</Text>
+                        <Espaciador orientacion={'vertical'} espaciado={15} />
                         <Text style={ styles.significado }>{ item.significado  }</Text>
                     </TouchableOpacity>
                 )}
@@ -81,8 +82,10 @@ export const SearchScreen = ({ navigation }: Props) => {
                 ItemSeparatorComponent={ () => (
                     <View style={ styles.itemSeparator } />
                 )}
+                
+            />
 
-            />                        
+            <View style={{ height: 65}} />                          
         </View>
     )
 }
@@ -90,7 +93,8 @@ export const SearchScreen = ({ navigation }: Props) => {
 const styles = StyleSheet.create({
     concepto: {
         fontSize: 20,
-        color: 'yellow'
+        color: 'yellow',
+        fontWeight: 'bold'
     },
     significado: {
         fontSize: 20,

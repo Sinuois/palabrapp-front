@@ -5,6 +5,7 @@ import { StackScreenProps } from '@react-navigation/stack';
 import { PalabrasContext } from '../context/PalabrasContext';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SplashScreen from 'react-native-splash-screen'
+import { useFocusEffect } from '@react-navigation/native';
 
 interface Props extends StackScreenProps<any, any>{};
 
@@ -31,6 +32,15 @@ export const HomeScreen = ({ navigation }: Props) => {
         if (ordenPalabras === 'New') setOrdenPalabras('Zyx');
         if (ordenPalabras === 'Zyx') setOrdenPalabras('Abc');
     }
+
+    useFocusEffect(
+        React.useCallback(() => {
+            cargarPalabrasDelBackend();
+            return () => {
+                // Limpia los efectos o suscripciones si es necesario
+            };
+        }, [])
+    );
 
     useEffect(() => {
         SplashScreen.hide();

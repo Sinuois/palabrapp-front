@@ -1,7 +1,7 @@
 import { StackScreenProps } from '@react-navigation/stack'
 import { AxiosError } from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
-import { ActivityIndicator, Button, Modal, StyleSheet, Text, TextInput, View } from 'react-native'
+import { ActivityIndicator, Button, Modal, StyleSheet, Text, TextInput, View, ScrollView } from 'react-native'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import palabrasApi from '../api/palabrasApi'
 import { Espaciador } from '../components/Espaciador'
@@ -26,6 +26,8 @@ export const PalabraScreen = ({ navigation, route }: Props)=> {
 
     const [cargado, setCargado] = useState(false);
 
+    const [autocompletando, setAutocompletando] = useState(false);
+
     const [modalBorrar, setModalBorrar] = useState(false);
 
 
@@ -37,10 +39,16 @@ export const PalabraScreen = ({ navigation, route }: Props)=> {
 
     useEffect(() => {
         //A veces se podría ingresar a una palabra que haya sido borrado segundos antes
+        setCargado(false);
         verificar();
-    }, [])
+    }, [route.params])
     
-
+    useEffect(() => {
+        const formulario = form;
+        formulario.significadoForm = signficadoActualizado;
+        setFormValue(formulario);
+        
+    }, [signficadoActualizado]);
 
     const [errorTomado, setErrorTomado] = useState("");
 
@@ -115,6 +123,7 @@ export const PalabraScreen = ({ navigation, route }: Props)=> {
         let palabraBusqueda = conceptoForm;
         const url = `https://dle.rae.es/${palabraBusqueda}`;
         try {
+            setAutocompletando(true);
             const response = await axios.get(url);
             const html = response.data;
             const $ = cheerio.load(html);
@@ -143,6 +152,7 @@ export const PalabraScreen = ({ navigation, route }: Props)=> {
                 setErrorTomado("No se ha logrado encontrar una definición para \"" + palabraBusqueda + "\".");
             }
 
+            setAutocompletando(false);
             onChange( definicion, 'significadoForm' ); 
             
         } catch (error) {
@@ -172,7 +182,7 @@ export const PalabraScreen = ({ navigation, route }: Props)=> {
                     (existe) ? ( 
                         ( modoEdicion ) ? (
                             //Editar concepto
-                            <View style={{ flex: 1 }}>
+                            <View  style={{ flex: 1 }}>
                                 <Text style={ styles.title }>Editar concepto</Text>
                                 <Espaciador orientacion={'vertical'} espaciado={20} />
         
@@ -206,15 +216,18 @@ export const PalabraScreen = ({ navigation, route }: Props)=> {
                                     disabled={ ( significadoForm.length ) ? false : true  }
                                     color="#5856D6"
                                 />                                              
-                            </View>
+                            </View >
                         ) : (
                             //Mostrar palabra y definición normalmente
                             ( _id.length > 0 ) ? (
                                 <View style={{ flex: 1 }}>
                                     <Text style={ styles.title }>{ concepto }</Text>
                                     <Espaciador orientacion={'vertical'} espaciado={50} />
-                                    <Text style={styles.label}>{ signficadoActualizado }</Text>
-                                    <View style={{flex: 1}} />
+                                    <ScrollView style={{ flex: 1 }}>
+                                        <Text style={styles.label}>{ signficadoActualizado }</Text>
+                                    </ScrollView>
+                                    
+                                    <Espaciador orientacion={'vertical'} espaciado={10} />
         
                                     <Button 
                                         title="Editar"
@@ -300,6 +313,16 @@ export const PalabraScreen = ({ navigation, route }: Props)=> {
                                     onPress={ autocompletarDefinicion }
                                     color="#4287f5"
                                 />  
+                                
+                                { autocompletando ? (
+                                    
+                                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                                        <Espaciador orientacion={'vertical'} espaciado={20} />
+                                        <ActivityIndicator size="small" color="#4287f5" />
+                                    </View>
+                                ) : null }
+
+                                
                                 <Espaciador orientacion={'vertical'} espaciado={20} />  
                                 <Text style={ styles.label }>Significado:</Text>
                                 <TextInput 
@@ -350,11 +373,9 @@ export const PalabraScreen = ({ navigation, route }: Props)=> {
                     //Cargando
                     <View style={{ flex: 1, alignItems:'center', alignContent: 'center', justifyContent: 'center' }}>
                         <ActivityIndicator size="large" color="#4287f5" />
-
                     </View>                    
                 )
             }
-
 
         </View>
     )
@@ -369,7 +390,8 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 25,
-        color: 'white'
+        color: 'white',
+        fontWeight: 'bold'
     },
     label: {
         fontSize: 18,
